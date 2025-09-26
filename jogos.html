@@ -316,11 +316,16 @@
             box-shadow: 0 0 15px var(--neon-green);
         }
 
-        /* Formulário de contato */
+        /* Formulário de contato e botões de confirmação */
+        #tradeFormPanel .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
         #tradeFormPanel input {
             width: 100%;
             padding: 10px;
-            margin-bottom: 10px;
             border-radius: 5px;
             border: 1px solid var(--electric-blue);
             background: #21262d;
@@ -332,8 +337,14 @@
             border-color: var(--light-mode-border);
         }
 
+        #tradeFormPanel .btn-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
         #tradeFormPanel button {
-            width: 100%;
+            flex: 1;
             padding: 12px;
             background: var(--neon-green);
             border: none;
@@ -341,6 +352,17 @@
             color: var(--dark-background);
             font-weight: bold;
             cursor: pointer;
+            transition: background 0.3s;
+        }
+        #tradeFormPanel button:hover {
+            background: var(--electric-blue);
+            color: var(--dark-background);
+        }
+        #tradeFormPanel .btn-return {
+            background: var(--electric-blue);
+        }
+        #tradeFormPanel .btn-return:hover {
+            background: var(--neon-green);
         }
 
         /* Chat do Consultor */
@@ -533,18 +555,25 @@
         </div>
     </div>
 
+    <!-- Painel de Formulário e Confirmação -->
     <div id="tradeFormPanel" class="floating-panel">
         <div class="panel-header">
             <h2>Trocar Satoshis</h2>
             <span class="close-btn" onclick="closePanel('tradeFormPanel')"><i class="ri-close-line"></i></span>
         </div>
         <div class="panel-content">
-            <p>Preencha os dados abaixo para contato:</p>
-            <form id="tradeForm">
-                <input type="text" id="tradeName" name="name" placeholder="Nome" required>
-                <input type="tel" id="tradePhone" name="phone" placeholder="Telefone" required>
-                <button type="button" onclick="confirmTrade()">Confirma</button>
-            </form>
+            <p id="form-message">Preencha os dados abaixo para contato:</p>
+            <div class="form-container">
+                <form id="tradeForm">
+                    <input type="text" id="tradeName" name="name" placeholder="Nome" required>
+                    <input type="tel" id="tradePhone" name="phone" placeholder="Telefone" required>
+                    <button type="button" onclick="confirmTrade()">Confirma</button>
+                </form>
+                <div class="btn-group" id="confirmationButtons" style="display: none;">
+                    <button class="btn-return" onclick="returnToMain()">Voltar</button>
+                    <button onclick="goToHub()">Acessar HUB</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -759,6 +788,12 @@
         window.openPanel = function(panelId) {
             document.querySelectorAll('.floating-panel').forEach(p => p.classList.remove('open'));
             document.getElementById(panelId).classList.add('open');
+            // Restaura o formulário de troca quando o painel é reaberto
+            if (panelId === 'tradeFormPanel') {
+                document.getElementById('tradeForm').style.display = 'block';
+                document.getElementById('confirmationButtons').style.display = 'none';
+                document.getElementById('form-message').textContent = 'Preencha os dados abaixo para contato:';
+            }
         };
 
         window.closePanel = function(panelId) {
@@ -792,16 +827,26 @@
             openPanel('detailPanel');
         };
 
-        // Lógica do formulário de contato
+        // Lógica do formulário de contato e redirecionamento
         window.confirmTrade = function() {
             const name = document.getElementById('tradeName').value;
             const phone = document.getElementById('tradePhone').value;
+            
             if (name && phone) {
-                alert(`Olá, ${name}! Recebemos sua solicitação de troca. Entraremos em contato no número ${phone}.`);
-                window.location.href = "index.html"; // Redireciona para a landing page
+                document.getElementById('form-message').textContent = `Olá, ${name}! Recebemos sua solicitação de troca. Entraremos em contato no número ${phone}.`;
+                document.getElementById('tradeForm').style.display = 'none';
+                document.getElementById('confirmationButtons').style.display = 'flex';
             } else {
-                alert("Por favor, preencha todos os campos.");
+                document.getElementById('form-message').textContent = "Por favor, preencha todos os campos.";
             }
+        };
+
+        window.returnToMain = function() {
+            closePanel('tradeFormPanel');
+        };
+
+        window.goToHub = function() {
+            window.location.href = "https://guilabriolag.github.io/HUB/index.html";
         };
 
         // Lógica do tema
