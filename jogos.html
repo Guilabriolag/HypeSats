@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HypeSats - Jogue e Ganhe Bitcoin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <style>
+        /* Estilos Base e Paleta de Cores */
+        :root {
+            --neon-green: #00ff99;
+            --electric-blue: #00ccff;
+            --dark-background: #0d1117;
+            --darker-background: #1a1a1a;
+            --light-text: #e6edf3;
+            --gray-text: #888;
+            --dark-card: #161b22;
+
+            /* Cores do Modo Claro */
+            --light-mode-background: #f0f2f5;
+            --light-mode-card: #ffffff;
+            --light-mode-text: #333333;
+            --light-mode-border: #cccccc;
+            --light-mode-shadow: rgba(0, 0, 0, 0.1);
+            --light-mode-accent: #007bff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-background);
+            color: var(--light-text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        body.light-mode {
+            background-color: var(--light-mode-background);
+            color: var(--light-mode-text);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Botão de Tema e Home */
+        #theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--electric-blue);
+            z-index: 10000;
+            transition: color 0.3s;
+        }
+        #home-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--electric-blue);
+            z-index: 10000;
+            transition: color 0.3s;
+        }
+        #home-button:hover, #theme-toggle:hover {
+            color: var(--neon-green);
+        }
+
+        body.light-mode #home-button, body.light-mode #theme-toggle {
+            color: var(--light-mode-accent);
+        }
+        body.light-mode #home-button:hover, body.light-mode #theme-toggle:hover {
+            color: var(--neon-green);
+        }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark-background);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+            flex-direction: column;
+        }
+
+        .splash-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        #splash-screen img {
+            width: 80%;
+            max-width: 400px;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { filter: drop-shadow(0 0 5px var(--neon-green)); }
+            to { filter: drop-shadow(0 0 20px var(--neon-green)); }
+        }
+
+        /* Main Menu Buttons */
+        #main-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        /* Animação de entrada dos botões */
+        .main-btn {
+            background-color: var(--dark-card);
+            color: var(--neon-green);
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            border: 1px solid var(--neon-green);
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 255, 153, 0.4);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+        body.light-mode .main-btn {
+            background-color: var(--light-mode-card);
+            color: var(--light-mode-accent);
+            border-color: var(--light-mode-accent);
+            box-shadow: 0 0 10px var(--light-mode-shadow);
+        }
+        body.light-mode .main-btn:hover {
+            background-color: var(--light-mode-accent);
+            color: var(--light-mode-card);
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.4);
+        }
+
+        .main-btn.animate-in {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        #main-menu .main-btn:nth-child(1) { transition-delay: 0.1s; }
+        #main-menu .main-btn:nth-child(2) { transition-delay: 0.2s; }
+        #main-menu .main-btn:nth-child(3) { transition-delay: 0.3s; }
+        #main-menu .main-btn:nth-child(4) { transition-delay: 0.4s; }
+        #main-menu .main-btn:nth-child(5) { transition-delay: 0.5s; }
+
+        .main-btn:hover {
+            background-color: var(--neon-green);
+            color: var(--dark-background);
+            box-shadow: 0 0 20px var(--neon-green);
+        }
+
+        /* Painéis Flutuantes (genéricos) */
+        .floating-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            background: var(--dark-card);
+            border: 1px solid var(--electric-blue);
+            box-shadow: 0 0 10px rgba(0, 204, 255, 0.4);
+            z-index: 9999;
+            padding: 15px;
+            display: none;
+            flex-direction: column;
+            resize: both;
+            overflow: hidden;
+            min-height: 200px;
+            border-radius: 20px;
+            transition: box-shadow 0.2s ease, background-color 0.5s, border-color 0.5s, color 0.5s;
+        }
+
+        body.light-mode .floating-panel {
+            background-color: var(--light-mode-card);
+            border-color: var(--light-mode-border);
+            box-shadow: 0 0 10px var(--light-mode-shadow);
+            color: var(--light-mode-text);
+        }
+
+        .floating-panel.is-dragging {
+            box-shadow: 0 0 30px var(--neon-green), 0 0 10px var(--electric-blue);
+        }
+        body.light-mode .floating-panel.is-dragging {
+            box-shadow: 0 0 30px var(--light-mode-accent), 0 0 10px var(--light-mode-border);
+        }
+
+        .floating-panel.open { display: flex; }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: move;
+        }
+        .panel-header h2 {
+            margin: 0;
+            color: var(--neon-green);
+            font-size: 1.2rem;
+            text-shadow: 0 0 5px var(--neon-green);
+        }
+        body.light-mode .panel-header h2 {
+            color: var(--light-mode-accent);
+            text-shadow: none;
+        }
+
+        .panel-header .close-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--electric-blue);
+            transition: color 0.2s;
+        }
+        .close-btn:hover { color: var(--neon-green); }
+
+        .panel-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .panel-option {
+            padding: 10px 0;
+            cursor: pointer;
+            transition: color 0.2s;
+            border-bottom: 1px solid rgba(0, 204, 255, 0.2);
+        }
+        body.light-mode .panel-option {
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .panel-option i { margin-right: 10px; }
+        .panel-option:hover { color: var(--neon-green); }
+
+        /* Painéis de Detalhes de Jogo/Carteira/Notícia */
+        .detail-panel {
+            display: none;
+            text-align: center;
+        }
+        .detail-panel.open { display: flex; }
+        .detail-panel img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .detail-panel h3 {
+            color: var(--neon-green);
+            font-size: 1.5rem;
+        }
+        body.light-mode .detail-panel h3 {
+            color: var(--light-mode-accent);
+        }
+        .detail-panel p {
+            font-size: 1rem;
+            color: var(--light-text);
+        }
+        body.light-mode .detail-panel p {
+            color: var(--light-mode-text);
+        }
+        .detail-panel ul {
+            text-align: left;
+            padding-left: 20px;
+        }
+        .detail-panel li {
+            font-size: 0.9rem;
+            color: var(--gray-text);
+            margin-bottom: 5px;
+        }
+        body.light-mode .detail-panel li {
+            color: var(--light-mode-text);
+        }
+        .detail-panel .btn {
+            margin-top: 15px;
+            display: inline-block;
+            background-color: var(--electric-blue);
+            color: var(--dark-background);
+            padding: 12px 24px;
+            font-weight: 600;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 5px var(--electric-blue);
+        }
+        body.light-mode .detail-panel .btn {
+            background-color: var(--light-mode-accent);
+            color: #ffffff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
+        }
+        .detail-panel .btn:hover {
+            background-color: var(--neon-green);
+            color: var(--dark-background);
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+
+        /* Formulário de contato */
+        #tradeFormPanel input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--electric-blue);
+            background: #21262d;
+            color: var(--light-text);
+        }
+        body.light-mode #tradeFormPanel input {
+            background: #e6e6e6;
+            color: var(--light-mode-text);
+            border-color: var(--light-mode-border);
+        }
+
+        #tradeFormPanel button {
+            width: 100%;
+            padding: 12px;
+            background: var(--neon-green);
+            border: none;
+            border-radius: 5px;
+            color: var(--dark-background);
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Chat do Consultor */
+        #bitcoinChatPanel .panel-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding-right: 0;
+        }
+
+        #chat-window {
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px solid rgba(0, 204, 255, 0.2);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            scroll-behavior: smooth;
+        }
+        body.light-mode #chat-window {
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-message {
+            margin-bottom: 10px;
+            word-wrap: break-word;
+        }
+
+        .chat-message.user {
+            text-align: right;
+        }
+        .chat-message.user span {
+            background-color: var(--electric-blue);
+            color: var(--dark-background);
+            padding: 8px 12px;
+            border-radius: 15px 15px 0 15px;
+            display: inline-block;
+            max-width: 80%;
+        }
+
+        .chat-message.ai {
+            text-align: left;
+        }
+        .chat-message.ai span {
+            background-color: var(--neon-green);
+            color: var(--dark-background);
+            padding: 8px 12px;
+            border-radius: 15px 15px 15px 0;
+            display: inline-block;
+            max-width: 80%;
+        }
+
+        #chat-form {
+            display: flex;
+            gap: 5px;
+        }
+        #chat-input {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--electric-blue);
+            background: #21262d;
+            color: var(--light-text);
+        }
+        body.light-mode #chat-input {
+            background: #e6e6e6;
+            color: var(--light-mode-text);
+            border-color: var(--light-mode-border);
+        }
+
+        #chat-submit-btn {
+            background: var(--neon-green);
+            border: none;
+            border-radius: 5px;
+            color: var(--dark-background);
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 15px;
+            transition: opacity 0.3s;
+        }
+        #chat-submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .loading-dots {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 10px;
+        }
+        .loading-dots span {
+            height: 8px;
+            width: 8px;
+            margin-right: 5px;
+            border-radius: 50%;
+            background-color: var(--neon-green);
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Botão Home -->
+    <a href="index.html" id="home-button">
+        <i class="ri-home-line"></i>
+    </a>
+    <!-- Botão de Tema -->
+    <button id="theme-toggle" onclick="toggleTheme()">
+        <i class="ri-moon-line"></i>
+    </button>
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi4lbRwcq5cmj2PdyIWOyWv4wQXlOOjxSHXj73LDPKQ10vXVOu9pJQ-FHNlml4BAeBLBmLAzU7VDAAElqw4RONr4A6Uwg4KuH3dQWeBl_N639_ISOXxwBzUU7nYoRuE42eYohlYW6mgsCFO4bT2sg5HJbZ9F0hSM7zl4al5CEeGYu0jlSEx8maIUm2fy30A/s958/12d2329a-0fd5-4712-bbc6-2800f17dda68.png" alt="Logo HypeSats">
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <div id="main-menu">
+            <button class="main-btn" onclick="openPanel('gamesPanel')">Jogos</button>
+            <button class="main-btn" onclick="openPanel('walletsPanel')">Resgate seus ganhos</button>
+            <button class="main-btn" onclick="openPanel('newsPanel')">Últimas Notícias</button>
+            <button class="main-btn" onclick="openPanel('tradeFormPanel')">Quer trocar Satoshis?</button>
+            <button class="main-btn" onclick="openPanel('bitcoinChatPanel')">Consultor Bitcoin ✨</button>
+        </div>
+    </div>
+
+    <!-- Painéis Flutuantes -->
+    <div id="gamesPanel" class="floating-panel">
+        <div class="panel-header">
+            <h2>Jogos</h2>
+            <span class="close-btn" onclick="closePanel('gamesPanel')"><i class="ri-close-line"></i></span>
+        </div>
+        <div class="panel-content">
+            <div class="panel-option" onclick="showDetail('game', 'tetro')">
+                <i class="ri-gamepad-line"></i> Tetro Tiles
+            </div>
+            <div class="panel-option" onclick="showDetail('game', 'satsss')">
+                <i class="ri-gamepad-line"></i> SATSSS
+            </div>
+            <div class="panel-option" onclick="showDetail('game', 'bounce')">
+                <i class="ri-gamepad-line"></i> Bitcoin Bounce
+            </div>
+            <div class="panel-option" onclick="showDetail('game', 'turbo84')">
+                <i class="ri-gamepad-line"></i> Turbo 84
+            </div>
+            <div class="panel-option" onclick="showDetail('game', 'solitaire')">
+                <i class="ri-gamepad-line"></i> Bitcoin Solitaire
+            </div>
+        </div>
+    </div>
+
+    <div id="walletsPanel" class="floating-panel">
+        <div class="panel-header">
+            <h2>Resgate seus ganhos</h2>
+            <span class="close-btn" onclick="closePanel('walletsPanel')"><i class="ri-close-line"></i></span>
+        </div>
+        <div class="panel-content">
+            <div class="panel-option" onclick="showDetail('wallet', 'satoshi')">
+                <i class="ri-wallet-3-line"></i> Wallet of Satoshi
+            </div>
+            <div class="panel-option" onclick="showDetail('wallet', 'bipa')">
+                <i class="ri-wallet-3-line"></i> Bipa
+            </div>
+        </div>
+    </div>
+
+    <div id="newsPanel" class="floating-panel">
+        <div class="panel-header">
+            <h2>Últimas Notícias</h2>
+            <span class="close-btn" onclick="closePanel('newsPanel')"><i class="ri-close-line"></i></span>
+        </div>
+        <div class="panel-content">
+            <div class="panel-option" onclick="showDetail('news', 'noticia1')">
+                <i class="ri-newspaper-line"></i> Lightning Network: mais veloz do que nunca!
+            </div>
+            <div class="panel-option" onclick="showDetail('news', 'noticia2')">
+                <i class="ri-newspaper-line"></i> Novo Jogo P2E Lançado: Conheça 'Satoshi Quest'
+            </div>
+            <div class="panel-option" onclick="showDetail('news', 'noticia3')">
+                <i class="ri-newspaper-line"></i> Bitcoin bate recorde de transações diárias
+            </div>
+        </div>
+    </div>
+
+    <div id="tradeFormPanel" class="floating-panel">
+        <div class="panel-header">
+            <h2>Trocar Satoshis</h2>
+            <span class="close-btn" onclick="closePanel('tradeFormPanel')"><i class="ri-close-line"></i></span>
+        </div>
+        <div class="panel-content">
+            <p>Preencha os dados abaixo para contato:</p>
+            <form id="tradeForm">
+                <input type="text" id="tradeName" name="name" placeholder="Nome" required>
+                <input type="tel" id="tradePhone" name="phone" placeholder="Telefone" required>
+                <button type="button" onclick="confirmTrade()">Confirma</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="bitcoinChatPanel" class="floating-panel">
+        <div class="panel-header">
+            <h2>Consultor Bitcoin ✨</h2>
+            <span class="close-btn" onclick="closePanel('bitcoinChatPanel')"><i class="ri-close-line"></i></span>
+        </div>
+        <div class="panel-content">
+            <div id="chat-window">
+                <div class="chat-message ai">
+                    <span>Olá! Sou o seu consultor Bitcoin. Pode perguntar o que quiser sobre Bitcoin, Lightning Network ou satoshis.</span>
+                </div>
+            </div>
+            <form id="chat-form">
+                <input type="text" id="chat-input" placeholder="Faça a sua pergunta..." required>
+                <button type="submit" id="chat-submit-btn"><i class="ri-send-plane-line"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div id="detailPanel" class="floating-panel detail-panel">
+        <div class="panel-header">
+            <h2 id="detailTitle"></h2>
+            <span class="close-btn" onclick="closePanel('detailPanel')"><i class="ri-close-line"></i></span>
+        </div>
+        <div class="panel-content" id="detailContent">
+            <!-- Conteúdo detalhado será injetado aqui -->
+        </div>
+    </div>
+
+    <script>
+        const splash = document.getElementById('splash-screen');
+        const detailPanel = document.getElementById('detailPanel');
+        const detailTitle = document.getElementById('detailTitle');
+        const detailContent = document.getElementById('detailContent');
+        const mainButtons = document.querySelectorAll('.main-btn');
+        const themeToggle = document.getElementById('theme-toggle');
+
+        // Dados dos jogos, carteiras e notícias
+        const games = {
+            'tetro': {
+                title: '🎮 Tetro Tiles',
+                description: 'Tetro Tiles é um jogo de blocos coloridos onde o objetivo é preencher linhas, colunas e quadrados sem deixar espaços. Fácil de aprender, mas desafiador de dominar, ele combina diversão com estímulo mental, ajudando a melhorar concentração, memória e raciocínio.',
+                highlights: [
+                    'Jogabilidade intuitiva e tátil',
+                    'Níveis gerados aleatoriamente',
+                    'Modos Liga (competitivo) e Relax (casual)',
+                    'Interface fluida e otimizada para dispositivos móveis',
+                    'Ideal para todas as idades e momentos do dia'
+                ],
+                image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhFkz5fU8xROrQk3qcLgwKggHoPR5utIPAmB0CNZ1iTdZ6bIMmLzd48r0cQqYcsF3aksWmvmb2H3HjfDO083GM7M9cVsD4nDYAPtq3wMDkYF36N0jloBJQX4diwVAzX7Djunvup3kcE8i_8G6mkyLQ2ekCp6X267IwFeL_c1XfanV4K8Gyt9HqOBx11x7iE/s692/Clipped_image_20250925_192711.png',
+                link: 'https://blocks.thndr.games/r/NsmW',
+                linkText: 'Jogar'
+            },
+            'satsss': {
+                title: '🐍 SATSSS',
+                description: 'Reviva a nostalgia do clássico jogo da cobrinha com uma recompensa moderna: Bitcoin! Em SATSSS, você controla a cobra, come minhocas e participa de sorteios diários para ganhar prêmios reais em satoshis (sats), tudo sem custo.',
+                highlights: [
+                    'Estilo play-to-earn com mais de 500.000 prêmios já distribuídos',
+                    'Sorteios diários pagos via Lightning Network',
+                    'Sem depósitos, limites ou compras obrigatórias',
+                    'Compatível com várias carteiras BTC',
+                    'Bilhetes THNDR como entrada para os sorteios'
+                ],
+                image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgagaiCNTeQCo6jMH_lkvqxG64XN67fdbaDl-rhcSnOgh-u5obqZ_iXaoad6jyy9-9QYaUdrsMYfYh9xwTr3TxTgecc0ES1SmVyz6nB4TgHTTrfymkKVp0I_QDUEIzmKtyXhibTLBv1SRtVZYuflK7dx4BgHyL20JftBReISH9Zqtdv6tDWNTn2Ep8dxZ1s/s944/Clipped_image_20250925_193941.png',
+                link: 'https://bitcoinsnake.thndr.games/r/VLoc',
+                linkText: 'Jogar'
+            },
+            'bounce': {
+                title: '🪙 Bitcoin Bounce',
+                description: 'Bitcoin Bounce é um jogo estilo arcade onde você salta por blocos da blockchain, coleta cupons e power-ups, e participa de sorteios diários para ganhar prêmios em Bitcoin. Simples de jogar e totalmente gratuito, o jogo faz parte do universo P2E (play-to-earn), permitindo que você acumule satoshis e troque por outras criptos ou produtos digitais.',
+                highlights: [
+                    'Jogabilidade divertida e baseada em distância percorrida',
+                    'Sorteios diários com prêmios em Bitcoin via Lightning Network',
+                    'Sem depósitos, limites ou compras obrigatórias',
+                    'Compatível com várias carteiras BTC',
+                    'Mais de 300.000 prêmios já distribuídos pela THNDR',
+                    'Comunidade ativa no Twitter e Discord'
+                ],
+                image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjOco47XvsUz2AnbsHsY5ZnLm3apjwILIUB1SdEUw8kzgW_jnayFEHsu6yQfenm8YCRYouttHkgsCCOPhdIQxr34GT7RK7zpTms77s5ZYGxDgCCl_mLOglr5gIE7NoE0bQedgQARY_dyVY603kLcHs7KZ8GF2ymwwdNGhZrbLIa4R8K6mBg9Xw3UevwAOt3/s865/Screenshot_20250925_193226_Google%20Play%20Store.png',
+                link: 'https://bitcoinbounce.thndr.games/r/tkn2',
+                linkText: 'Jogar'
+            },
+            'turbo84': {
+                title: '🏁 Turbo 84',
+                description: 'Turbo 84 é um eletrizante jogo de corrida onde você dirige em alta velocidade desviando de obstáculos e coletando power-ups. Com gráficos retrô, trilha sonora envolvente e jogabilidade viciante, ele oferece uma experiência nostálgica e moderna ao mesmo tempo.',
+                highlights: [
+                    'Corrida infinita com velocidade crescente',
+                    'Obstáculos desafiadores e reflexos rápidos',
+                    'Power-ups como ímãs e boosts de velocidade',
+                    'Personalização de carros com estilos únicos',
+                    'Modos Clássico e Torneios online',
+                    'Controles intuitivos e acessíveis para todas as idades',
+                    'Integração com redes sociais para compartilhar pontuações'
+                ],
+                image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiGCYnvKXVnKvsmeUjPzk72-PwrpoG_WLvBAZbKipy-JLezbKYCBwJg4T1jeRFDtCvALmccYBlCkGiFiI0c1dpYTyTvbQRo3JO2XwzhplJhpmDbcdjpumEVWvIZf4f_HKm46LYL3S8ZEca7gCcMOtrLW0xvhmAzphuFql4difO_An4XWAuCxKP_7fpxtlfJ/s587/Clipped_image_20250925_193016.png',
+                link: 'https://turbo84.thndr.games/r/zZsq',
+                linkText: 'Jogar'
+            },
+            'solitaire': {
+                title: '🃏 Bitcoin Solitaire',
+                description: 'Combine o clássico Klondike Solitaire com recompensas em criptomoeda! Em Bitcoin Solitaire, você joga partidas de cartas, acumula bilhetes THNDR e participa de sorteios diários para ganhar satoshis (frações de Bitcoin), tudo sem custo.',
+                highlights: [
+                    'Estilo play-to-earn com mais de 1 milhão de prêmios já pagos',
+                    'Sorteios diários via Lightning Network',
+                    'Sem depósitos, limites ou compras obrigatórias',
+                    'Compatível com carteiras BTC como Zebedee, Satoshi Wallet, Breez e outras',
+                    'Bilhetes THNDR como entradas para sorteios (sem valor monetário)'
+                ],
+                image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiPrZ29Z4NcVsmIDIkKBOJyc29CFG0nNMmNU-yjXOhDbt9Zh2lxLoA6QiSVxYSUm6_COlz5v5MQS2dn3rfQfBJj8xscI83CCp6f7HJOIga8H6zHsy5gIp9vtLn6gbgwNYw-jHNJfdNXFEU8B7-8dkJZXJ9iWan5UI2nRkkpnnp99-L1lzQO3DKkDR0xblrm/s686/Clipped_image_20250925_194101.png',
+                link: 'https://solitaire.thndr.games/r/8mAJ',
+                linkText: 'Jogar'
+            }
+        };
+
+        const wallets = {
+            'satoshi': {
+                title: '🔐 Wallet of Satoshi',
+                description: 'A Wallet of Satoshi é uma carteira digital para Bitcoin e Lightning Network, disponível para Android e iOS, projetada para oferecer a forma mais fácil e rápida de enviar e receber pagamentos em Bitcoin.',
+                highlights: [
+                    'Pagamentos instantâneos via Lightning Network',
+                    'Compra de Bitcoin diretamente pelo app em diversos países',
+                    'Interface intuitiva ideal para iniciantes',
+                    'Modo custodial ou autônomo',
+                    'Backup fácil com recuperação por e-mail',
+                    'Endereço Lightning personalizado'
+                ],
+                image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjL8YK3F3tyXeKyrliQjuaQdB1VXcAZ4wMTqSyCRkNV9Vo_nlDghU8SKbj2vPwiZDs1_fdLVaOUi6HZPFP_hG0r-1MTDrivoWwjd9S4mXTdKDvnf9x84qtqf9_fai1etrr4SOvHJRffIvhcu-_rgYVHSNBb_ZgY47y8WivGnGr0xQQ4ajyv-P7ngQvgsROr/s700/images%20(2).png',
+                link: 'https://www.walletofsatoshi.com/',
+                linkText: 'Baixar'
+            },
+            'bipa': {
+                title: '💳 Bipa',
+                description: 'A Bipa é uma carteira digital focada exclusivamente em Bitcoin, desenvolvida no Brasil para facilitar o uso cotidiano da criptomoeda.',
+                highlights: [
+                    'Envio e recebimento instantâneo via Lightning Network',
+                    'Compra de Bitcoin com Pix, direto pelo app',
+                    'Interface em português, pensada para o público brasileiro',
+                    'Sem taxas ocultas e com foco em transparência',
+                    'Integração com jogos P2E para saque de sats',
+                    'Suporte ágil e comunidade ativa'
+                ],
+                image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiGVFMVcUE4TEemmwySfQfwzCX2h-XyzLzfd7Z-Gtf0eCBVJZDyCixBrgRhYQhTW5r3_2kntmlnFJ9aRJLrnwonDizx0URXQiPAJPEp69RJBt7llemQZK3KjZArtDadKCRAtlvK1zklU4zq9F6SDp4rYu2Rw1fgpTBqa1oRTtUMgz909f3Gy9pGjJJDfm-w/s512/images%20(41).jpeg',
+                link: 'https://bipa.app/convite/ABQKRE',
+                linkText: 'Baixar'
+            }
+        };
+
+        const news = {
+            'noticia1': {
+                title: '🚀 Lightning Network bate recorde de transações',
+                description: 'A rede Lightning, solução de segunda camada do Bitcoin, alcançou um novo marco com um número recorde de transações diárias, impulsionando a velocidade e a acessibilidade dos pagamentos em BTC globalmente.',
+                highlights: [
+                    'Mais transações, menor custo',
+                    'Adoção crescente por empresas',
+                    'Tecnologia que acelera o uso do Bitcoin no dia a dia',
+                    'Solução para pagamentos de micropreços'
+                ],
+                image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh6wK5WwE4L5Vq-2Xb4T4yV_1tM2N7O0mB4jS8-J8g8xY1I6gQp7rE6b8J3M9oX1oW_f3-eY5l1hY8b8Qp1wJ9sY2c8hY7f4kF9x-1h8vQ_f3Q-2d-W4zQ/s1600/lightning-network-news.jpg',
+                link: 'https://www.coindesk.com',
+                linkText: 'Leia mais'
+            },
+            'noticia2': {
+                title: '🕹️ Novo Jogo "Satoshi Quest" é lançado',
+                description: 'Um novo jogo play-to-earn, "Satoshi Quest", chegou ao mercado, prometendo combinar elementos de RPG com recompensas em satoshis. Os jogadores podem explorar mundos virtuais e completar missões para acumular Bitcoin.',
+                highlights: [
+                    'Estilo RPG de aventura',
+                    'Ganhos em satoshis por missões',
+                    'Disponível para dispositivos móveis e desktop',
+                    'Primeiro jogo a usar o protocolo "GameLink"'
+                ],
+                image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg2t2S0c9g0yJ-3Y5b7l_x5g_f4p5f3l_9t7v5l5x2g8l6r9o-4e6r8t3c-5j-e-5i-e-5f-e-e-4e-e-5f-4a/s1600/new-game-release.jpg',
+                link: 'https://www.decrypt.co',
+                linkText: 'Leia mais'
+            },
+            'noticia3': {
+                title: '📈 Bitcoin bate recorde de transações diárias',
+                description: 'Pela primeira vez na história, a rede Bitcoin processou mais de 700 mil transações em um único dia. O aumento se deve ao crescente interesse em Ordinals e outras inovações na blockchain.',
+                highlights: [
+                    'Novo recorde histórico',
+                    'Maior volume em 24h',
+                    'Adoção impulsionada por novos casos de uso',
+                    'Confirma a utilidade da rede'
+                ],
+                image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi_6wY9xR4Z7x_g_y7y7d_3v-4h9j8g5j_e-9r-5b_0h8o-8e-1f_e-5d-f-b-b-8h-7e-5g/s1600/bitcoin-transactions.jpg',
+                link: 'https://www.bitcoinmagazine.com',
+                linkText: 'Leia mais'
+            }
+        };
+
+        // Lógica do Splash Screen
+        document.addEventListener("DOMContentLoaded", function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeToggle.innerHTML = '<i class="ri-moon-line"></i>';
+            } else {
+                themeToggle.innerHTML = '<i class="ri-sun-line"></i>';
+            }
+
+            setTimeout(() => {
+                splash.classList.add('fade-out');
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    mainButtons.forEach(btn => btn.classList.add('animate-in'));
+                }, 1000);
+            }, 2000);
+        });
+
+        // Funções para gerenciar painéis
+        window.openPanel = function(panelId) {
+            document.querySelectorAll('.floating-panel').forEach(p => p.classList.remove('open'));
+            document.getElementById(panelId).classList.add('open');
+        };
+
+        window.closePanel = function(panelId) {
+            document.getElementById(panelId).classList.remove('open');
+        };
+
+        window.showDetail = function(type, id) {
+            let data;
+            if (type === 'game') {
+                data = games[id];
+            } else if (type === 'wallet') {
+                data = wallets[id];
+            } else if (type === 'news') {
+                data = news[id];
+            }
+
+            if (!data) return;
+
+            detailTitle.textContent = data.title;
+            let highlightsHtml = '';
+            if (data.highlights) {
+                highlightsHtml = data.highlights.map(item => `<li>${item}</li>`).join('');
+            }
+            
+            detailContent.innerHTML = `
+                ${data.image ? `<img src="${data.image}" alt="${data.title}">` : ''}
+                <p>${data.description}</p>
+                ${highlightsHtml ? `<ul>${highlightsHtml}</ul>` : ''}
+                <a href="${data.link}" class="btn" target="_blank">${data.linkText}</a>
+            `;
+            openPanel('detailPanel');
+        };
+
+        // Lógica do formulário de contato
+        window.confirmTrade = function() {
+            const name = document.getElementById('tradeName').value;
+            const phone = document.getElementById('tradePhone').value;
+            if (name && phone) {
+                alert(`Olá, ${name}! Recebemos sua solicitação de troca. Entraremos em contato no número ${phone}.`);
+                window.location.href = "index.html"; // Redireciona para a landing page
+            } else {
+                alert("Por favor, preencha todos os campos.");
+            }
+        };
+
+        // Lógica do tema
+        window.toggleTheme = function() {
+            const isLightMode = document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', isLightMode ? 'light' : 'dark');
+            themeToggle.innerHTML = isLightMode ? '<i class="ri-sun-line"></i>' : '<i class="ri-moon-line"></i>';
+        };
+
+        // Lógica para o chat do Consultor Bitcoin
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatWindow = document.getElementById('chat-window');
+        const chatSubmitBtn = document.getElementById('chat-submit-btn');
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userPrompt = chatInput.value;
+            if (!userPrompt.trim()) return;
+
+            addMessageToChat(userPrompt, 'user');
+            chatInput.value = '';
+            chatSubmitBtn.disabled = true;
+
+            const loadingDots = document.createElement('div');
+            loadingDots.classList.add('loading-dots');
+            loadingDots.innerHTML = '<span></span><span></span><span></span>';
+            chatWindow.appendChild(loadingDots);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+
+            try {
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                
+                const systemPrompt = "Você é um especialista em Bitcoin e na rede Lightning. Responda a perguntas sobre o Bitcoin de forma didática e concisa. Use a linguagem casual e amigável. Mantenha as respostas curtas e objetivas, como se estivesse a conversar com alguém a começar. Evite jargão técnico complexo sempre que possível.";
+                
+                const payload = {
+                    contents: [{ parts: [{ text: userPrompt }] }],
+                    tools: [{ "google_search": {} }],
+                    systemInstruction: {
+                        parts: [{ text: systemPrompt }]
+                    },
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API response error: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+                let aiResponseText = "Desculpe, não consegui obter uma resposta no momento. Por favor, tente novamente.";
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    aiResponseText = candidate.content.parts[0].text;
+                }
+                
+                chatWindow.removeChild(loadingDots);
+                addMessageToChat(aiResponseText, 'ai');
+
+            } catch (error) {
+                console.error("Erro ao chamar a API:", error);
+                chatWindow.removeChild(loadingDots);
+                addMessageToChat("Desculpe, ocorreu um erro. Tente novamente mais tarde.", 'ai');
+            } finally {
+                chatSubmitBtn.disabled = false;
+            }
+        });
+
+        function addMessageToChat(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('chat-message', sender);
+            
+            const messageSpan = document.createElement('span');
+            messageSpan.textContent = text;
+            messageDiv.appendChild(messageSpan);
+            
+            chatWindow.appendChild(messageDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        // Funções de Arrastar e Soltar com novo efeito
+        let activeItem = null;
+        let isDragging = false;
+        let initialX, initialY, xOffset, yOffset;
+        const draggableItems = document.querySelectorAll('.floating-panel');
+
+        draggableItems.forEach(item => {
+            const handle = item.querySelector('.panel-header');
+            if (handle) {
+                handle.addEventListener('mousedown', dragStart);
+                handle.addEventListener('touchstart', dragStart);
+            }
+        });
+
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag);
+        document.addEventListener('mouseup', dragEnd);
+        document.addEventListener('touchend', dragEnd);
+
+        function dragStart(e) {
+            e.stopPropagation();
+            activeItem = e.currentTarget.closest('.floating-panel');
+            isDragging = true;
+            activeItem.classList.add('is-dragging');
+            
+            const style = window.getComputedStyle(activeItem);
+            const transform = style.transform === 'none' ? { m41: 0, m42: 0 } : new DOMMatrix(style.transform);
+            xOffset = transform.m41;
+            yOffset = transform.m42;
+            const clientX = e.type.startsWith("touch") ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type.startsWith("touch") ? e.touches[0].clientY : e.clientY;
+            initialX = clientX - xOffset;
+            initialY = clientY - yOffset;
+        }
+        function drag(e) {
+            if (!isDragging || !activeItem) return;
+            e.preventDefault();
+            const clientX = e.type.startsWith("touch") ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type.startsWith("touch") ? e.touches[0].clientY : e.clientY;
+            const newX = clientX - initialX;
+            const newY = clientY - initialY;
+            activeItem.style.transform = `translate(${newX}px, ${newY}px)`;
+            xOffset = newX;
+            yOffset = newY;
+        }
+        function dragEnd() {
+            isDragging = false;
+            if (activeItem) {
+                activeItem.classList.remove('is-dragging');
+                activeItem = null;
+            }
+        }
+    </script>
+</body>
+</html>
