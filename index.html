@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HypeSats - Jogue, Ganhe Bitcoin!</title>
+    <meta name="description" content="HypeSats: jogue e ganhe Bitcoin de verdade. Conheça os jogos da THNDR Games, aprenda sobre Bitcoin e troque satoshis de forma simples e divertida.">
+    <link rel="icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi4lbRwcq5cmj2PdyIWOyWv4wQXlOOjxSHXj73LDPKQ10vXVOu9pJQ-FHNlml4BAeBLBmLAzU7VDAAElqw4RONr4A6Uwg4KuH3dQWeBl_N639_ISOXxwBzUU7nYoRuE42eYohlYW6mgsCFO4bT2sg5HJbZ9F0hSM7zl4al5CEeGYu0jlSEx8maIUm2fy30A/s958/12d2329a-0fd5-4712-bbc6-2800f17dda68.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --neon-green: #00ff99;
+            --electric-blue: #00ccff;
+            --dark-background: #0d1117;
+            --darker-background: #1a1a1a;
+            --light-text: #e6edf3;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-background);
+            color: var(--light-text);
+        }
+        .neon-text-green { color: var(--neon-green); text-shadow: 0 0 5px var(--neon-green); }
+        .neon-text-blue { color: var(--electric-blue); text-shadow: 0 0 5px var(--electric-blue); }
+        .neon-border-green { border-color: var(--neon-green); }
+        .neon-border-blue { border-color: var(--electric-blue); }
+        .gradient-bg { background-image: linear-gradient(135deg, var(--darker-background) 0%, var(--dark-background) 100%); }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="min-h-screen flex items-center justify-center p-4 gradient-bg">
+        <main class="max-w-4xl w-full text-center">
+            
+            <!-- Logo e Título Principal -->
+            <div class="mb-12">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi4lbRwcq5cmj2PdyIWOyWv4wQXlOOjxSHXj73LDPKQ10vXVOu9pJQ-FHNlml4BAeBLBmLAzU7VDAAElqw4RONr4A6Uwg4KuH3dQWeBl_N639_ISOXxwBzUU7nYoRuE42eYohlYW6mgsCFO4bT2sg5HJbZ9F0hSM7zl4al5CEeGYu0jlSEx8maIUm2fy30A/s958/12d2329a-0fd5-4712-bbc6-2800f17dda68.png" alt="Logo HypeSats" class="mx-auto w-48 mb-4 animate-pulse">
+                <h1 class="text-6xl md:text-8xl font-extrabold neon-text-green tracking-tighter">HypeSats</h1>
+                <p class="text-xl md:text-2xl mt-2 neon-text-blue font-light">Jogue. Ganhe Bitcoin. Concorra a prêmios.</p>
+            </div>
+
+            <!-- O que é o HypeSats? -->
+            <section id="about" class="bg-gray-800 bg-opacity-30 backdrop-blur-md p-6 sm:p-10 rounded-3xl shadow-lg border border-gray-700 transition-all duration-300 hover:shadow-2xl">
+                <h2 class="text-3xl sm:text-4xl font-bold neon-text-blue mb-6">O que é o HypeSats?</h2>
+                <p class="text-base sm:text-lg mb-6">Uma campanha que transforma seu tempo jogando em recompensas reais.</p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8">
+                    <ul class="text-left space-y-3 text-lg font-light flex-grow">
+                        <li class="flex items-center gap-2"><i class="ri-play-circle-fill text-2xl text-yellow-300"></i>Baixe jogos da THNDR Games</li>
+                        <li class="flex items-center gap-2"><i class="ri-bit-coin-line text-2xl text-yellow-500"></i>Ganhe satoshis (frações de Bitcoin) enquanto joga</li>
+                    </ul>
+                    <a href="jogos.html" class="bg-neon-green text-dark-background font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:bg-white focus:outline-none focus:ring-4 focus:ring-neon-green/50">
+                        JOGOS
+                    </a>
+                </div>
+            </section>
+
+            <!-- Como funciona? -->
+            <section id="how-it-works" class="mt-16 text-left">
+                <h2 class="text-3xl sm:text-4xl font-bold neon-text-green mb-8 text-center">Como funciona?</h2>
+                <ol class="grid md:grid-cols-3 gap-6">
+                    <li class="bg-gray-800 bg-opacity-30 p-6 rounded-3xl border border-gray-700 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20">
+                        <span class="text-4xl font-bold neon-text-blue block mb-2">1</span>
+                        <h3 class="text-2xl font-semibold mb-2">Baixe os jogos</h3>
+                        <p class="text-sm">Acesse nossa central de jogos e comece a diversão. É grátis e fácil!</p>
+                        <a href="jogos.html" class="mt-4 inline-block neon-text-blue hover:underline">Ir para Jogos →</a>
+                    </li>
+                    <li class="bg-gray-800 bg-opacity-30 p-6 rounded-3xl border border-gray-700 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20">
+                        <span class="text-4xl font-bold neon-text-green block mb-2">2</span>
+                        <h3 class="text-2xl font-semibold mb-2">Crie sua carteira</h3>
+                        <p class="text-sm">Para receber seus satoshis, você precisa de uma carteira Bitcoin compatível. Recomendamos:</p>
+                        <div class="mt-4 space-x-2">
+                            <a href="https://bipa.app/convite/ABQKRE" target="_blank" class="text-sm text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-full transition-colors">Bipa</a>
+                            <a href="https://www.walletofsatoshi.com" target="_blank" class="text-sm text-white bg-orange-500 hover:bg-orange-600 px-3 py-1 rounded-full transition-colors">WOS</a>
+                        </div>
+                    </li>
+                    <li class="bg-gray-800 bg-opacity-30 p-6 rounded-3xl border border-gray-700 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20">
+                        <span class="text-4xl font-bold neon-text-blue block mb-2">3</span>
+                        <h3 class="text-2xl font-semibold mb-2">Jogue e acumule</h3>
+                        <p class="text-sm">Acumule satoshis em cada partida e resgate os ganhos diretamente para sua carteira. Simples assim!</p>
+                    </li>
+                </ol>
+            </section>
+            
+            <!-- Onde começar? -->
+            <section id="get-started" class="mt-16 text-left">
+                <h2 class="text-3xl sm:text-4xl font-bold neon-text-green mb-8 text-center">Onde começar?</h2>
+                <div class="bg-gray-800 bg-opacity-30 p-6 rounded-3xl border border-gray-700">
+                    <p class="text-lg font-light mb-4 text-center">Acesse a nossa central para começar sua jornada:</p>
+                    <a href="jogos.html" class="block bg-neon-green text-dark-background font-bold py-4 px-8 rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:bg-white focus:outline-none focus:ring-4 focus:ring-neon-green/50 text-2xl sm:text-3xl text-center">
+                        <i class="ri-arrow-right-line mr-2"></i>Acessar HypeSats
+                    </a>
+                </div>
+            </section>
+
+            <!-- Por que participar? -->
+            <section id="why-join" class="mt-16 text-center">
+                <h2 class="text-3xl sm:text-4xl font-bold neon-text-blue mb-8">Por que participar?</h2>
+                <ul class="flex flex-col sm:flex-row justify-center gap-8 text-xl font-light">
+                    <li class="flex items-center gap-2">
+                        <span class="text-4xl neon-text-green">💡</span>
+                        <p>Diversão garantida com jogos viciantes.</p>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="text-4xl neon-text-green">📚</span>
+                        <p>Aprenda na prática como usar Bitcoin.</p>
+                    </li>
+                </ul>
+            </section>
+            
+            <footer class="mt-20 py-8 text-center">
+                <p class="text-xl sm:text-2xl font-light neon-text-green">⚡ HypeSats: o hype é jogar, o prêmio é em Bitcoin!</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Fontes e Ícones -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+</body>
+</html>
