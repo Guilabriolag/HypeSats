@@ -1,120 +1,363 @@
 <!DOCTYPE html>
-<html lang="pt-br" class="scroll-smooth">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HypeSats - Jogue, Ganhe Bitcoin!</title>
-    <meta name="description" content="HypeSats: jogue e ganhe Bitcoin de verdade. Conheça os jogos da THNDR Games, aprenda sobre Bitcoin e troque satoshis de forma simples e divertida.">
-    <link rel="icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi4lbRwcq5cmj2PdyIWOyWv4wQXlOOjxSHXj73LDPKQ10vXVOu9pJQ-FHNlml4BAeBLBmLAzU7VDAAElqw4RONr4A6Uwg4KuH3dQWeBl_N639_ISOXxwBzUU7nYoRuE42eYohlYW6mgsCFO4bT2sg5HJbZ9F0hSM7zl4al5CEeGYu0jlSEx8maIUm2fy30A/s958/12d2329a-0fd5-4712-bbc6-2800f17dda68.png" type="image/x-icon">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        :root {
-            --neon-green: #00ff99;
-            --electric-blue: #00ccff;
-            --dark-background: #0d1117;
-            --darker-background: #1a1a1a;
-            --light-text: #e6edf3;
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--dark-background);
-            color: var(--light-text);
-        }
-        .neon-text-green { color: var(--neon-green); text-shadow: 0 0 5px var(--neon-green); }
-        .neon-text-blue { color: var(--electric-blue); text-shadow: 0 0 5px var(--electric-blue); }
-        .neon-border-green { border-color: var(--neon-green); }
-        .neon-border-blue { border-color: var(--electric-blue); }
-        .gradient-bg { background-image: linear-gradient(135deg, var(--darker-background) 0%, var(--dark-background) 100%); }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HypeSats Hub V6</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --neon-blue: #00aaff;
+      --dark-background: #0d1117;
+      --darker-background: #161b22;
+      --light-text: #e6edf3;
+      --gray-text: #8b949e;
+      --transition-speed: 0.5s;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--dark-background);
+      color: var(--light-text);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Splash screen */
+    #splash-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: var(--dark-background);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: all var(--transition-speed) ease-in-out;
+    }
+    #splash-screen.fade-out {
+      opacity: 0; visibility: hidden;
+      transform: scale(1.1);
+    }
+    .splash-logo {
+      width: 150px;
+      filter: drop-shadow(0 0 15px var(--neon-blue));
+      animation: pulse-blue 1.5s infinite alternate;
+    }
+    .splash-slogan {
+      font-size: 1.2rem;
+      color: var(--neon-blue);
+      margin-top: 10px;
+      opacity: 0;
+      animation: fade-in 1s ease-in-out 0.5s forwards;
+    }
+    @keyframes pulse-blue {
+      from { transform: scale(1); filter: drop-shadow(0 0 10px var(--neon-blue)); }
+      to { transform: scale(1.05); filter: drop-shadow(0 0 25px var(--neon-blue)); }
+    }
+    @keyframes fade-in { to { opacity: 1; } }
+
+    /* Header */
+    .fixed-header {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: rgba(13, 17, 23, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 500;
+    }
+    .header-logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .header-logo-img {
+      width: 45px;
+      filter: drop-shadow(0 0 10px var(--neon-blue));
+      animation: pulse-blue 1.5s infinite alternate;
+    }
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--neon-blue);
+    }
+
+    /* Switch */
+    .switch-container { cursor: pointer; }
+    .switch-img { width: 55px; }
+
+    /* Floating buttons */
+    .floating-buttons {
+      position: fixed;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      z-index: 400;
+    }
+    .floating-buttons.active { display: flex; }
+
+    .floating-btn {
+      width: 80px; height: 80px;
+      border: none; background: transparent;
+      cursor: grab; padding: 0;
+    }
+    .floating-btn img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      transition: transform 0.2s ease;
+      filter: drop-shadow(0 0 10px var(--neon-blue));
+      animation: pulse-blue 1.5s infinite alternate;
+    }
+    .floating-btn img:hover { transform: scale(1.1); }
+
+    /* Content section */
+    #content-section {
+      margin-top: 80px;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: start;
+      padding: 20px;
+    }
+    .content-card {
+      background: var(--darker-background);
+      border: 1px solid var(--neon-blue);
+      border-radius: 12px;
+      padding: 20px;
+      width: 600px;
+      max-width: 95%;
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .content-card.active { display: flex; }
+    .card-header {
+      display: flex; justify-content: space-between;
+      border-bottom: 1px solid rgba(0,170,255,0.3);
+      padding-bottom: 8px;
+    }
+    .close-btn {
+      background: none; border: none;
+      color: var(--light-text);
+      font-size: 1.5rem; cursor: pointer;
+    }
+    .close-btn:hover { color: red; }
+
+    .btn {
+      background: var(--neon-blue);
+      color: var(--dark-background);
+      padding: 10px 25px;
+      border-radius: 6px;
+      border: none;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn:hover { box-shadow: 0 0 15px var(--neon-blue); }
+
+    /* Gemini input */
+    #bitcoin-question {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--neon-blue);
+      border-radius: 6px;
+      background: var(--dark-background);
+      color: var(--light-text);
+    }
+    #response-container {
+      margin-top: 10px;
+      padding: 10px;
+      background: var(--darker-background);
+      border: 1px solid var(--neon-blue);
+      border-radius: 6px;
+      min-height: 40px;
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
-<body class="antialiased">
-    <div class="min-h-screen flex items-center justify-center p-4 gradient-bg">
-        <main class="max-w-4xl w-full text-center">
-            
-            <!-- Logo e Título Principal -->
-            <div class="mb-12">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi4lbRwcq5cmj2PdyIWOyWv4wQXlOOjxSHXj73LDPKQ10vXVOu9pJQ-FHNlml4BAeBLBmLAzU7VDAAElqw4RONr4A6Uwg4KuH3dQWeBl_N639_ISOXxwBzUU7nYoRuE42eYohlYW6mgsCFO4bT2sg5HJbZ9F0hSM7zl4al5CEeGYu0jlSEx8maIUm2fy30A/s958/12d2329a-0fd5-4712-bbc6-2800f17dda68.png" alt="Logo HypeSats" class="mx-auto w-48 mb-4 animate-pulse">
-                <h1 class="text-6xl md:text-8xl font-extrabold neon-text-green tracking-tighter">HypeSats</h1>
-                <p class="text-xl md:text-2xl mt-2 neon-text-blue font-light">Jogue. Ganhe Bitcoin. Concorra a prêmios.</p>
-            </div>
+<body>
+  <!-- Splash -->
+  <div id="splash-screen">
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" class="splash-logo">
+    <p class="splash-slogan">@Labriolag</p>
+  </div>
 
-            <!-- O que é o HypeSats? -->
-            <section id="about" class="bg-gray-800 bg-opacity-30 backdrop-blur-md p-6 sm:p-10 rounded-3xl shadow-lg border border-gray-700 transition-all duration-300 hover:shadow-2xl">
-                <h2 class="text-3xl sm:text-4xl font-bold neon-text-blue mb-6">O que é o HypeSats?</h2>
-                <p class="text-base sm:text-lg mb-6">Uma campanha que transforma seu tempo jogando em recompensas reais.</p>
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8">
-                    <ul class="text-left space-y-3 text-lg font-light flex-grow">
-                        <li class="flex items-center gap-2"><i class="ri-play-circle-fill text-2xl text-yellow-300"></i>Baixe jogos da THNDR Games</li>
-                        <li class="flex items-center gap-2"><i class="ri-bit-coin-line text-2xl text-yellow-500"></i>Ganhe satoshis (frações de Bitcoin) enquanto joga</li>
-                    </ul>
-                    <a href="jogos.html" class="bg-neon-green text-dark-background font-bold py-3 px-8 rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:bg-white focus:outline-none focus:ring-4 focus:ring-neon-green/50">
-                        JOGOS
-                    </a>
-                </div>
-            </section>
+  <!-- Header -->
+  <header class="fixed-header">
+    <div class="header-logo-container">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi7T-L3I1t95j33Pu9cdst8hHJShqSHsjSu09-kpkNNWxkb1R2hhTSqdr3DGtTmv74y6gxla4YUaGzThga3M1UaJcPuterWAMycodowVFBpHRMmRPmOmI3zpexmBBaiHg6Mvb24ggw1dcJ3Hh8CZFRho4PjBcGxhRzR9rkcx-x1hpLpHBlEmIEyRwE3n-By/s756/20250918_001110.png" class="header-logo-img">
+      <span class="header-title">HypeSats</span>
+    </div>
+    <div class="switch-container">
+      <img id="toggle-switch" 
+        src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjRPO1d7nN4S339y3iUSt1ImVyAxsYONQkOqIOSvpkAW9X4h_9t3Fj8exlXlDJLXm7msn8c3wCaZd7RE2hd-nTRcgcKaHumSMnoFPqS1d_zhoU1EotU9XPYc_6lsgwqaxab6H-vE5tveNdD-XG5GGrx4zVJH9drGI7CtbixZPU811P2BqUBi3Q7r_SzJ5J2/s1536/copilot_image_1758853496256.jpeg" 
+        alt="Switch Off" class="switch-img">
+    </div>
+  </header>
 
-            <!-- Como funciona? -->
-            <section id="how-it-works" class="mt-16 text-left">
-                <h2 class="text-3xl sm:text-4xl font-bold neon-text-green mb-8 text-center">Como funciona?</h2>
-                <ol class="grid md:grid-cols-3 gap-6">
-                    <li class="bg-gray-800 bg-opacity-30 p-6 rounded-3xl border border-gray-700 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/20">
-                        <span class="text-4xl font-bold neon-text-blue block mb-2">1</span>
-                        <h3 class="text-2xl font-semibold mb-2">Baixe os jogos</h3>
-                        <p class="text-sm">Acesse nossa central de jogos e comece a diversão. É grátis e fácil!</p>
-                        <a href="jogos.html" class="mt-4 inline-block neon-text-blue hover:underline">Ir para Jogos →</a>
-                    </li>
-                    <li class="bg-gray-800 bg-opacity-30 p-6 rounded-3xl border border-gray-700 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/20">
-                        <span class="text-4xl font-bold neon-text-green block mb-2">2</span>
-                        <h3 class="text-2xl font-semibold mb-2">Crie sua carteira</h3>
-                        <p class="text-sm">Para receber seus satoshis, você precisa de uma carteira Bitcoin compatível. Recomendamos:</p>
-                        <div class="mt-4 space-x-2">
-                            <a href="https://bipa.app/convite/ABQKRE" target="_blank" class="text-sm text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded-full transition-colors">Bipa</a>
-                            <a href="https://www.walletofsatoshi.com" target="_blank" class="text-sm text-white bg-orange-500 hover:bg-orange-600 px-3 py-1 rounded-full transition-colors">WOS</a>
-                        </div>
-                    </li>
-                    <li class="bg-gray-800 bg-opacity-30 p-6 rounded-3xl border border-gray-700 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/20">
-                        <span class="text-4xl font-bold neon-text-blue block mb-2">3</span>
-                        <h3 class="text-2xl font-semibold mb-2">Jogue e acumule</h3>
-                        <p class="text-sm">Acumule satoshis em cada partida e resgate os ganhos diretamente para sua carteira. Simples assim!</p>
-                    </li>
-                </ol>
-            </section>
-            
-            <!-- Onde começar? -->
-            <section id="get-started" class="mt-16 text-left">
-                <h2 class="text-3xl sm:text-4xl font-bold neon-text-green mb-8 text-center">Onde começar?</h2>
-                <div class="bg-gray-800 bg-opacity-30 p-6 rounded-3xl border border-gray-700">
-                    <p class="text-lg font-light mb-4 text-center">Acesse a nossa central para começar sua jornada:</p>
-                    <a href="jogos.html" class="block bg-neon-green text-dark-background font-bold py-4 px-8 rounded-full shadow-lg transition-all duration-300 hover:scale-105 hover:bg-white focus:outline-none focus:ring-4 focus:ring-neon-green/50 text-2xl sm:text-3xl text-center">
-                        <i class="ri-arrow-right-line mr-2"></i>Acessar HypeSats
-                    </a>
-                </div>
-            </section>
-
-            <!-- Por que participar? -->
-            <section id="why-join" class="mt-16 text-center">
-                <h2 class="text-3xl sm:text-4xl font-bold neon-text-blue mb-8">Por que participar?</h2>
-                <ul class="flex flex-col sm:flex-row justify-center gap-8 text-xl font-light">
-                    <li class="flex items-center gap-2">
-                        <span class="text-4xl neon-text-green">💡</span>
-                        <p>Diversão garantida com jogos viciantes.</p>
-                    </li>
-                    <li class="flex items-center gap-2">
-                        <span class="text-4xl neon-text-green">📚</span>
-                        <p>Aprenda na prática como usar Bitcoin.</p>
-                    </li>
-                </ul>
-            </section>
-            
-            <footer class="mt-20 py-8 text-center">
-                <p class="text-xl sm:text-2xl font-light neon-text-green">⚡ HypeSats: o hype é jogar, o prêmio é em Bitcoin!</p>
-            </footer>
-
-        </main>
+  <!-- Main content -->
+  <section id="content-section">
+    <div id="card-what-is" class="content-card">
+      <div class="card-header">
+        <h2>O que é o HypeSats?</h2>
+        <button class="close-btn">&times;</button>
+      </div>
+      <p>Uma campanha que transforma seu tempo jogando em recompensas reais.</p>
+      <p>🎮 Baixe jogos da <strong>THNDR Games</strong></p>
+      <p>⚡ Ganhe <strong>satoshis</strong> (frações de Bitcoin) enquanto joga</p>
+      <a href="https://guilabriolag.github.io/HypeSats/jogos.html" class="btn" target="_blank">JOGOS</a>
     </div>
 
-    <!-- Fontes e Ícones -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet"/>
+    <div id="card-how-it-works" class="content-card">
+      <div class="card-header">
+        <h2>Como funciona?</h2>
+        <button class="close-btn">&times;</button>
+      </div>
+      <p>1️⃣ <strong>Baixe os jogos</strong>: Acesse nossa central de jogos e comece a diversão. 
+        <a href="https://guilabriolag.github.io/HypeSats/jogos.html" class="btn" target="_blank">Ir para Jogos →</a></p>
+      <p>2️⃣ <strong>Crie sua carteira</strong>: Recomendamos <em>Bipa</em> ou <em>Wallet of Satoshi</em>.</p>
+      <p>3️⃣ <strong>Jogue e acumule</strong>: Ganhe satoshis e resgate direto na sua carteira.</p>
+    </div>
+
+    <div id="card-where-to-start" class="content-card">
+      <div class="card-header">
+        <h2>Onde começar?</h2>
+        <button class="close-btn">&times;</button>
+      </div>
+      <p>Acesse a nossa central para iniciar:</p>
+      <a href="https://guilabriolag.github.io/HypeSats/jogos.html" class="btn" target="_blank">Acessar HypeSats</a>
+      <h3>Por que participar?</h3>
+      <p>💡 Diversão garantida com jogos viciantes.</p>
+      <p>📚 Aprenda na prática como usar Bitcoin.</p>
+    </div>
+
+    <div id="card-gemini" class="content-card">
+      <div class="card-header">
+        <h2>Pergunte ao Gemini ✨</h2>
+        <button class="close-btn">&times;</button>
+      </div>
+      <p>Tem dúvidas sobre Bitcoin ou satoshis? Pergunte aqui:</p>
+      <textarea id="bitcoin-question" rows="3" placeholder="O que são satoshis?"></textarea>
+      <button id="ask-btn" class="btn">Perguntar</button>
+      <div id="response-container">A resposta aparecerá aqui.</div>
+    </div>
+  </section>
+
+  <!-- Floating buttons -->
+  <div class="floating-buttons" id="floating-buttons-container">
+    <button class="floating-btn" data-target="card-what-is">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhKSdWPXAPGlkLqJvj2MqvE-IbZr_QtGN1C2YC8_Ue6P9sZn5t7qkT6XUd10p2obJG5aw9B2jMIJO7wVSZAq_ujT0fIhYG147oUpwA5llGSlJX-6RW1sMvNCk9H-O_KTfdoDeSGnhJ0C2APXwBpD062hb6YyDLYWV9KN4FfM35JwE4bBO2lq2NBIWhOddnK/s931/20250925_231954.png">
+    </button>
+    <button class="floating-btn" data-target="card-how-it-works">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgKrAfD17xdBgBSiLLIzrAA1jpYtKKhIELvd9-UJhJKhwfjCUmdwDtrtJlgXGQUrfQyN_UgHc3Qr9n4ZTgZOucG2rP8EcdHB0mU7mkS06Ho5SfWs5_w6AXT_0uOYvD1Qg_6fn74rwtorlnRgIQwna4pX5EnMXt6Kg91myXOxNVRUbv97u8t0PiaOTvqM93H/s927/20250925_231933.png">
+    </button>
+    <button class="floating-btn" data-target="card-where-to-start">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgTLJErwVjVBXmCZJ9pijDbxbiELPIm-aXuEjW3EuWC1cVoeyPJT1vNcxpSg1txps7wX_NrKAYyQvo5HI_YuJHsxGESjSUrIS2XwVQcFoxYN__eusDpZduorZw90c6xVrnuXLC5ASz9UKBNsKh-syhxEezNcXJy3tKbM0E5amrVXxq6ijxaDe2GS8EWOPF8/s923/20250925_231901.png">
+    </button>
+    <button class="floating-btn" data-target="card-gemini">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjIwlByosU7vsBFEPQflaHYZNTBQrjgmCF-LrYCCfp1d95QJvTieh7dvwmkSh-vQOkgt33n2o0nyaiq6NIB2VFc_eMkEP38zgwalR3gGHHVBqTZp0VQnGNOJr4BMHGoqzISeS8oyY1waA974KAW0gvJiujxq723QmwkaNJgRLklNoFAmPVrLSZgB-ajL29l/s1536/copilot_image_1758854551985.jpeg">
+    </button>
+  </div>
+
+  <script>
+    const splash = document.getElementById('splash-screen');
+    const toggleSwitch = document.getElementById('toggle-switch');
+    const floatingButtons = document.getElementById('floating-buttons-container');
+    const cards = document.querySelectorAll('.content-card');
+
+    // Splash fade
+    window.addEventListener("load", () => {
+      setTimeout(() => splash.classList.add("fade-out"), 2000);
+    });
+
+    // Switch logic
+    let isOn = false;
+    toggleSwitch.addEventListener('click', () => {
+      isOn = !isOn;
+      if (isOn) {
+        toggleSwitch.src = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgjuULloLbX4KQ61-0QwvPSoqEn3rXspvudA3JlQ9FNWAOHXZJK96HviF9U02Gj7cBDRZcZhsEsuf93XNS-9M6cwMC3Ue6CoecuEFdp4QUUtVWwMzmMBUYPhr2UAG9kF0N9i843rJkYS4vfcxQKJz6E8KG725Trxgyh_-YM2_3BkvMImGWBvdQRm59SsgbG/s1536/copilot_image_1758853456681.jpeg";
+        floatingButtons.classList.add("active");
+      } else {
+        toggleSwitch.src = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjRPO1d7nN4S339y3iUSt1ImVyAxsYONQkOqIOSvpkAW9X4h_9t3Fj8exlXlDJLXm7msn8c3wCaZd7RE2hd-nTRcgcKaHumSMnoFPqS1d_zhoU1EotU9XPYc_6lsgwqaxab6H-vE5tveNdD-XG5GGrx4zVJH9drGI7CtbixZPU811P2BqUBi3Q7r_SzJ5J2/s1536/copilot_image_1758853496256.jpeg";
+        floatingButtons.classList.remove("active");
+        cards.forEach(c => c.classList.remove("active"));
+      }
+    });
+
+    // Open/close cards
+    document.querySelectorAll('.floating-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        cards.forEach(c => c.classList.remove("active"));
+        document.getElementById(targetId).classList.add("active");
+      });
+    });
+    document.querySelectorAll('.close-btn').forEach(btn => {
+      btn.addEventListener('click', () => btn.closest('.content-card').classList.remove('active'));
+    });
+
+    // Dragging logic
+    let activeItem = null, offsetX = 0, offsetY = 0;
+    document.querySelectorAll('.floating-btn').forEach(btn => {
+      btn.addEventListener('mousedown', dragStart);
+      btn.addEventListener('touchstart', dragStart);
+    });
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('touchmove', drag);
+    document.addEventListener('mouseup', dragEnd);
+    document.addEventListener('touchend', dragEnd);
+
+    function dragStart(e) {
+      activeItem = e.currentTarget;
+      offsetX = (e.type === "touchstart" ? e.touches[0].clientX : e.clientX) - activeItem.offsetLeft;
+      offsetY = (e.type === "touchstart" ? e.touches[0].clientY : e.clientY) - activeItem.offsetTop;
+    }
+    function drag(e) {
+      if (!activeItem) return;
+      e.preventDefault();
+      const x = (e.type === "touchmove" ? e.touches[0].clientX : e.clientX) - offsetX;
+      const y = (e.type === "touchmove" ? e.touches[0].clientY : e.clientY) - offsetY;
+      activeItem.style.position = "fixed";
+      activeItem.style.left = `${x}px`;
+      activeItem.style.top = `${y}px`;
+    }
+    function dragEnd() { activeItem = null; }
+
+    // Gemini API integration
+    document.getElementById('ask-btn').addEventListener('click', async () => {
+      const question = document.getElementById('bitcoin-question').value;
+      const responseContainer = document.getElementById('response-container');
+      if (!question.trim()) {
+        responseContainer.textContent = "Digite uma pergunta.";
+        return;
+      }
+      responseContainer.textContent = "Carregando resposta...";
+      try {
+        const API_KEY = "SUA_API_KEY_AQUI"; // 🔑 coloque sua chave Gemini aqui
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ contents: [{ parts: [{ text: question }] }] })
+        });
+        const data = await res.json();
+        responseContainer.textContent = data.candidates?.[0]?.content?.parts?.[0]?.text || "Não consegui responder.";
+      } catch (err) {
+        responseContainer.textContent = "Erro ao conectar ao Gemini.";
+      }
+    });
+  </script>
 </body>
 </html>
